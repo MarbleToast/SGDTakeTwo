@@ -35,9 +35,101 @@
 				bottom: 0;
 				width: 100%;
 			}
+			.fixed {
+				position: fixed;
+				z-index: 999;
+				top: 10px;
+				left: 10px;
+			}
+			#menu {
+				background: #fff;
+				position: absolute;
+				z-index: 1;
+				top: 10px;
+				right: 10px;
+				border-radius: 3px;
+				width: 120px;
+				border: 1px solid rgba(0, 0, 0, 0.4);
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			#menu a {
+				font-size: 13px;
+				color: #404040;
+				display: block;
+				margin: 0;
+				padding: 0;
+				padding: 10px;
+				text-decoration: none;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+				text-align: center;
+			}
+
+			#menu a:last-child {
+				
+			}
+
+			#menu a:hover {
+				background-color: #f8f8f8;
+				color: #404040;
+			}
+
+			#menu a.active {
+				background-color: #3887be;
+				color: #ffffff;
+			}
+
+			#menu a.active:hover {
+				background: #3074a4;
+			}
+
+			#selection {
+				background: #fff;
+				position: absolute;
+				z-index: 1;
+				top: 10px;
+				left: 10px;
+				border-radius: 3px;
+				width: 120px;
+				border: 1px solid rgba(0, 0, 0, 0.4);
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			#selection b {
+				font-size: 13px;
+				color: #404040;
+				display: block;
+				margin: 0;
+				padding: 0;
+				padding: 0px;
+				text-decoration: none;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+				text-align: center;
+			}
+
+			#selection b:last-child {
+				
+			}
+
+			#selection b:hover {
+				background-color: #f8f8f8;
+				color: #404040;
+			}
+
+			#selection b.active {
+				background-color: #3887be;
+				color: #ffffff;
+			}
+
+			#selection b.active:hover {
+				background: #3074a4;
+			}
+
 		</style>
 	</head>
 	<body>
+		<nav id="selection"></nav>
+		<nav id="menu"></nav>
 		<div id="map"></div>
 		<div class="select-container" id="select-container">
 			<select class="select" id="select-option">
@@ -47,6 +139,64 @@
 		</div>
 
 		<script>
+
+			var toggleableSGDIds = ['SGD1', 'SGD2'];
+			var toggleableLayerIds = [['Before1', 'After1'], ['Before2']];
+
+			for (var i=0; i<toggleableSGDIds.length; i++) {
+				var id = toggleableSGDIds[i];
+
+				var link = document.createElement('b');
+				link.href = '#';
+				link.className = 'active';
+				link.textContent = id;
+
+				link.onclick = function(e) {
+					var clickedLayer = this.textContent;
+					e.preventDefault();
+					e.stopPropagation();
+
+					var index = toggleableSGDIds.indexOf(clickedLayer);
+					document.getElementById('menu').innerHTML = '';
+					changeOptions(toggleableLayerIds[index]);
+				};
+				var sel = document.getElementById('selection');
+				sel.appendChild(link);
+			};
+
+			changeOptions = function(toggleableLayerIds) {
+				for (var i=0; i<toggleableLayerIds.length; i++) {
+					var id = toggleableLayerIds[i];
+
+					var link = document.createElement('a');
+					link.href = '#';
+					link.className = 'active';
+					link.textContent = id;
+
+					link.onclick = function(e) {
+						var clickedLayer = this.textContent;
+						e.preventDefault();
+						e.stopPropagation();
+
+						var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+						if (visibility == 'visible') {
+							map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+							this.className = '';
+						} 
+						else {
+							this.className = 'active';
+							map.setLayoutProperty(clickedLayer, 'visibility', 'visibile');
+						}
+
+					};
+
+					var layers = document.getElementById('menu');
+					layers.appendChild(link);
+
+				}
+			}
+
 			mapboxgl.accessToken =
 				"pk.eyJ1IjoibWFyYmxldG9hc3QiLCJhIjoiY2thdGwzbmZvMDJnMTJ5bzlzZ2N2dzRoeiJ9.CSGWtvwdfVBHb6YP0kurOw"
 
