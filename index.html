@@ -213,10 +213,6 @@
 			var currentMap = "Particulates"
 			var currentMapVariant = "April 2019 Particulates"
 
-			//var before_after = document.getElementById("before-after")
-			//var before_after_value = before_after.value
-			var before_after_value = "before"
-
 			var cluster
 			var clusterRadius
 			var clusterMaxZoom
@@ -235,7 +231,9 @@
 					Object.keys(datasets[element]).forEach(async (key) => {
 						result = await fetch(datasets[element][key])
 						json = await result.json()
-						console.log(data[element][key])
+						if (!data[element]) {
+							data[element] = {}
+						}
 						data[element][key] = json
 					})
 				})
@@ -254,6 +252,10 @@
 						propertyToAggregate = "COTotalColumn"
 						color = ["rgb(145,207,96)", "rgb(255,255,191)", "rgb(255,0,0)"]
 				}
+
+				console.log(currentMap)
+				console.log(currentMapVariant)
+				console.log(data)
 
 				geojson_data = data[currentMap][currentMapVariant]
 
