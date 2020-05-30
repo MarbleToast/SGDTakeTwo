@@ -50,7 +50,7 @@
 				border-radius: 3px;
 				width: 120px;
 				border: 1px solid rgba(0, 0, 0, 0.4);
-				font-family: 'Open Sans', sans-serif;
+				font-family: "Open Sans", sans-serif;
 			}
 
 			#menu a {
@@ -66,7 +66,6 @@
 			}
 
 			#menu a:last-child {
-				
 			}
 
 			#menu a:hover {
@@ -92,7 +91,7 @@
 				border-radius: 3px;
 				width: 120px;
 				border: 1px solid rgba(0, 0, 0, 0.4);
-				font-family: 'Open Sans', sans-serif;
+				font-family: "Open Sans", sans-serif;
 			}
 
 			#selection b {
@@ -108,7 +107,6 @@
 			}
 
 			#selection b:last-child {
-				
 			}
 
 			#selection b:hover {
@@ -124,78 +122,83 @@
 			#selection b.active:hover {
 				background: #3074a4;
 			}
-
 		</style>
 	</head>
 	<body>
 		<nav id="selection"></nav>
 		<nav id="menu"></nav>
 		<div id="map"></div>
-		<div class="select-container" id="select-container">
-			<select class="select" id="select-option">
-				<option value="particulates">Particulates (mol/m^3)</option>
-			</select>
-			<div class="select-arrow"></div>
-		</div>
 
 		<script>
+			var toggleableSGDIds = ["Particulates", "SGD2"]
+			var toggleableLayerIds = [
+				["April 2019 Particulates", "April 2020 Particulates"],
+				["Before2"],
+			]
 
-			var toggleableSGDIds = ['SGD1', 'SGD2'];
-			var toggleableLayerIds = [['Before1', 'After1'], ['Before2']];
+			var datasets = {
+				Particulates: {
+					"April 2019 Particulates":
+						"./datasets/particulates/april2019.geojson",
+					"April 2020 Particulates":
+						"./datasets/particulates/april2019.geojson",
+				},
+			}
 
-			for (var i=0; i<toggleableSGDIds.length; i++) {
-				var id = toggleableSGDIds[i];
+			for (var i = 0; i < toggleableSGDIds.length; i++) {
+				var id = toggleableSGDIds[i]
 
-				var link = document.createElement('b');
-				link.href = '#';
-				link.className = 'active';
-				link.textContent = id;
+				var link = document.createElement("b")
+				link.href = "#"
+				link.className = "active"
+				link.textContent = id
 
-				link.onclick = function(e) {
-					var clickedLayer = this.textContent;
-					e.preventDefault();
-					e.stopPropagation();
+				link.onclick = function (e) {
+					var clickedLayer = this.textContent
+					e.preventDefault()
+					e.stopPropagation()
 
-					var index = toggleableSGDIds.indexOf(clickedLayer);
-					document.getElementById('menu').innerHTML = '';
-					changeOptions(toggleableLayerIds[index]);
-				};
-				var sel = document.getElementById('selection');
-				sel.appendChild(link);
-			};
+					var index = toggleableSGDIds.indexOf(clickedLayer)
+					document.getElementById("menu").innerHTML = ""
 
-			changeOptions = function(toggleableLayerIds) {
-				for (var i=0; i<toggleableLayerIds.length; i++) {
-					var id = toggleableLayerIds[i];
+					changeOptions(toggleableLayerIds[index])
+				}
+				var sel = document.getElementById("selection")
+				sel.appendChild(link)
+			}
 
-					var link = document.createElement('a');
-					link.href = '#';
-					link.className = 'active';
-					link.textContent = id;
+			changeOptions = function (toggleableLayerIds) {
+				for (var i = 0; i < toggleableLayerIds.length; i++) {
+					var id = toggleableLayerIds[i]
 
-					link.onclick = function(e) {
-						var clickedLayer = this.textContent;
-						e.preventDefault();
-						e.stopPropagation();
+					var link = document.createElement("a")
+					link.href = "#"
+					link.className = "active"
+					link.textContent = id
 
-						var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+					link.onclick = function (e) {
+						var clickedLayer = this.textContent
+						e.preventDefault()
+						e.stopPropagation()
 
-						if (visibility == 'visible') {
-							map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-							this.className = '';
-						} 
-						else {
-							this.className = 'active';
-							map.setLayoutProperty(clickedLayer, 'visibility', 'visibile');
+						var visibility = map.getLayoutProperty(clickedLayer, "visibility")
+
+						if (visibility == "visible") {
+							map.setLayoutProperty(clickedLayer, "visibility", "none")
+							this.className = ""
+						} else {
+							this.className = "active"
+							map.setLayoutProperty(clickedLayer, "visibility", "visible")
 						}
+						currentMapVariant = this.textContent
+					}
 
-					};
-
-					var layers = document.getElementById('menu');
-					layers.appendChild(link);
-
+					var layers = document.getElementById("menu")
+					layers.appendChild(link)
 				}
 			}
+
+			changeOptions(toggleableLayerIds[0])
 
 			mapboxgl.accessToken =
 				"pk.eyJ1IjoibWFyYmxldG9hc3QiLCJhIjoiY2thdGwzbmZvMDJnMTJ5bzlzZ2N2dzRoeiJ9.CSGWtvwdfVBHb6YP0kurOw"
@@ -207,8 +210,8 @@
 				zoom: 2,
 			})
 
-			var select_el = document.getElementById("select-option")
-			var select_value = select_el.value
+			var currentMap = "Particulates"
+			var currentMapVariant = "April 2019 Particulates"
 
 			//var before_after = document.getElementById("before-after")
 			//var before_after_value = before_after.value
@@ -221,72 +224,72 @@
 			var color
 			var currentZoom
 			var clusterData
+			var data = {}
 
-			map.on("load", getData())
+			map.on("load", async () => {
+				await getData()
+			})
 
-			function getData() {
-				switch (select_value) {
-					case "particulates":
-						file =
-							before_after_value === "before"
-								? "./datasets/particulates/april2019.geojson"
-								: "./datasets/particulates/april2020.geojson"
+			async function getData() {
+				Object.keys(datasets).forEach((element) => {
+					Object.keys(datasets[element]).forEach(async (key) => {
+						result = await fetch(datasets[element][key])
+						json = await result.json()
+						console.log(data[element][key])
+						data[element][key] = json
+					})
+				})
+			}
+
+			function createCluster() {
+				switch (currentMap) {
+					case "Particulates":
 						clusterRadius = 5
 						clusterMaxZoom = 14
 						propertyToAggregate = "COTotalColumn"
 						color = ["rgb(145,207,96)", "rgb(255,255,191)", "rgb(255,0,0)"]
 					default:
-						file =
-							before_after_value === "before"
-								? "./datasets/particulates/april2019.geojson"
-								: "./datasets/particulates/april2020.geojson"
 						clusterRadius = 5
 						clusterMaxZoom = 14
 						propertyToAggregate = "COTotalColumn"
 						color = ["rgb(145,207,96)", "rgb(255,255,191)", "rgb(255,0,0)"]
 				}
-				fetch(file)
-					.then((result) => result.json())
-					.then((json) => {
-						geojson_data = json
 
-						cluster = new Supercluster({
-							radius: clusterRadius,
-							maxZoom: clusterMaxZoom,
-							initial: function () {
-								return {
-									count: 0,
-									sum: 0,
-									min: Infinity,
-									max: -Infinity,
-								}
-							},
-							map: function (properties) {
-								return {
-									count: 1,
-									sum: Number(properties[propertyToAggregate]),
-									min: Number(properties[propertyToAggregate]),
-									max: Number(properties[propertyToAggregate]),
-								}
-							},
-							reduce: function (accumulated, properties) {
-								accumulated.sum += Math.round(properties.sum * 100) / 100
-								accumulated.count += properties.count
-								accumulated.min =
-									Math.round(Math.min(accumulated.min, properties.min) * 100) /
-									100
-								accumulated.max =
-									Math.round(Math.max(accumulated.max, properties.max) * 100) /
-									100
-								accumulated.avg =
-									Math.round((100 * accumulated.sum) / accumulated.count) / 100
-							},
-						})
+				geojson_data = data[currentMap][currentMapVariant]
 
-						cluster.load(geojson_data.features)
-						initmap()
-					})
-					.catch((e) => console.error(e))
+				cluster = new Supercluster({
+					radius: clusterRadius,
+					maxZoom: clusterMaxZoom,
+					initial: function () {
+						return {
+							count: 0,
+							sum: 0,
+							min: Infinity,
+							max: -Infinity,
+						}
+					},
+					map: function (properties) {
+						return {
+							count: 1,
+							sum: Number(properties[propertyToAggregate]),
+							min: Number(properties[propertyToAggregate]),
+							max: Number(properties[propertyToAggregate]),
+						}
+					},
+					reduce: function (accumulated, properties) {
+						accumulated.sum += Math.round(properties.sum * 100) / 100
+						accumulated.count += properties.count
+						accumulated.min =
+							Math.round(Math.min(accumulated.min, properties.min) * 100) / 100
+						accumulated.max =
+							Math.round(Math.max(accumulated.max, properties.max) * 100) / 100
+						accumulated.avg =
+							Math.round((100 * accumulated.sum) / accumulated.count) / 100
+					},
+				})
+
+				cluster.load(geojson_data.features)
+				initmap()
 			}
 
 			function getFeatureDomain(geojson_data) {
@@ -371,11 +374,6 @@
 			function initmap() {
 				updateClusters(false)
 
-				select_el.addEventListener("change", function (e) {
-					select_value = select_el.value
-					updateClusters(true)
-				})
-
 				map.addSource("particulatesApril19", {
 					type: "geojson",
 					data: clusterData,
@@ -384,7 +382,7 @@
 
 				map.addLayer(
 					{
-						id: "clusters_particulatesApril19",
+						id: "April 2019 Particulates",
 						type: "circle",
 						source: "particulatesApril19",
 						filter: ["has", "point_count"],
