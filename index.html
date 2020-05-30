@@ -62,7 +62,9 @@
 
 			//var before_after = document.getElementById("before-after")
 			//var before_after_value = before_after.value
+			var before_after_value = "before"
 
+			var cluster
 			var clusterRadius
 			var clusterMaxZoom
 			var propertyToAggregate
@@ -75,13 +77,19 @@
 			function getData() {
 				switch (select_value) {
 					case "particulates":
-						file = "./april2019.geojson"
+						file =
+							before_after_value === "before"
+								? "./april2019.geojson"
+								: "./april2020.geojson"
 						clusterRadius = 5
 						clusterMaxZoom = 14
 						propertyToAggregate = "COTotalColumn"
 						color = ["rgb(145,207,96)", "rgb(255,255,191)", "rgb(255,0,0)"]
 					default:
-						file = "./april2019.geojson"
+						file =
+							before_after_value === "before"
+								? "./april2019.geojson"
+								: "./april2020.geojson"
 						clusterRadius = 5
 						clusterMaxZoom = 14
 						propertyToAggregate = "COTotalColumn"
@@ -91,6 +99,40 @@
 					.then((result) => result.json())
 					.then((json) => {
 						geojson_data = json
+
+						cluster = new Supercluster({
+							radius: clusterRadius,
+							maxZoom: clusterMaxZoom,
+							initial: function () {
+								return {
+									count: 0,
+									sum: 0,
+									min: Infinity,
+									max: -Infinity,
+								}
+							},
+							map: function (properties) {
+								return {
+									count: 1,
+									sum: Number(properties[propertyToAggregate]),
+									min: Number(properties[propertyToAggregate]),
+									max: Number(properties[propertyToAggregate]),
+								}
+							},
+							reduce: function (accumulated, properties) {
+								accumulated.sum += Math.round(properties.sum * 100) / 100
+								accumulated.count += properties.count
+								accumulated.min =
+									Math.round(Math.min(accumulated.min, properties.min) * 100) /
+									100
+								accumulated.max =
+									Math.round(Math.max(accumulated.max, properties.max) * 100) /
+									100
+								accumulated.avg =
+									Math.round((100 * accumulated.sum) / accumulated.count) / 100
+							},
+						})
+
 						cluster.load(geojson_data.features)
 						initmap()
 					})
@@ -139,37 +181,6 @@
 				})
 				return stops
 			}
-
-			var cluster = new Supercluster({
-				radius: clusterRadius,
-				maxZoom: clusterMaxZoom,
-				initial: function () {
-					return {
-						count: 0,
-						sum: 0,
-						min: Infinity,
-						max: -Infinity,
-					}
-				},
-				map: function (properties) {
-					return {
-						count: 1,
-						sum: Number(properties[propertyToAggregate]),
-						min: Number(properties[propertyToAggregate]),
-						max: Number(properties[propertyToAggregate]),
-					}
-				},
-				reduce: function (accumulated, properties) {
-					accumulated.sum += Math.round(properties.sum * 100) / 100
-					accumulated.count += properties.count
-					accumulated.min =
-						Math.round(Math.min(accumulated.min, properties.min) * 100) / 100
-					accumulated.max =
-						Math.round(Math.max(accumulated.max, properties.max) * 100) / 100
-					accumulated.avg =
-						Math.round((100 * accumulated.sum) / accumulated.count) / 100
-				},
-			})
 
 			function updateClusters(repaint) {
 				currentZoom = map.getZoom()
