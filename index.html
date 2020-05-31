@@ -33,12 +33,16 @@
 			}
 
 			#SDG_logo {
-				width: 25%;
+				width: 27%;
 				float: left;
-				padding-right: 20px;
+				font-size: 18px;
+				text-align: center;
 			}
 
 			#information_text {
+				padding-top: 10px;
+				padding-left: 20px;
+				padding-right: 20px;
 				color: #009DDA;
 				text-align: justify;
 			}
@@ -54,21 +58,23 @@
 		<div class="wrapper">
 		<div id="SDG_logo">
 		<a href="https://sustainabledevelopment.un.org/?menu=1300"><img src="logos/SDG_horizontal.png" width = 100%/></a>
-		<img src="logos/SDG_11.png" onmouseover="this.src='logos/SDG_11_2.png'" style = "padding-left: 25%" onmouseout="this.src='logos/SDG_11.png'" width=50%/>
+		<a href='sdg7.html'><img src="logos/SDG_11.png" onmouseover="this.src='logos/SDG_11_2.png'" onmouseout="this.src='logos/SDG_11.png'" width=50%/></a>
+		<br>Click the logo to access the heatmap
 		</div>
 
 		<div id="information_text">
-		The Sustainable Development Goals (SDGs) are an important part of global society and it is essential that we keep them at the forefront of science and policy, especially with a view to moving out of the COVID-19 crisis. We elected to look into SDG 11, Sustainable Cities and Communities, because it is important to link the impact of coronavirus to global air pollution and then link this back to the impact it has on communities. This will enable us to produce a more interdisciplinary, integrated outlook on the future and how best to move forward following the pandemic, ensuring to keep the environmental crisis we also face in mind.
+		Decreasing air pollution world-wide is crucial for reaching the UN Sustainable Development Goals. Air pollution is estimated to cause seven million deaths globally each year [1]. Air pollution has also been attributed to reduced vegetation health and crop yields [2]. Air quality is assessed by levels of: Ozone, Nitrogen Dioxide, Sulphur Dioxide, PM2.5 and PM10 and carbon monoxide. 
 		<br><br>
-		Using data from the Canadian Space Agency on Carbon Monoxide (CO) concentration and JavaScript’s mapbox library, we have plotted a heat map of CO concentration in atmospheric columns (mol/m^3) across the world. There are 2 layers to the map, one for April 2019, and one for April 2020, allowing us to compare the CO concentration before and during the COVID-19 outbreak. The layers are able to be turned on and off individually for clearer comparisons. On zooming in and out of the world map, the resolution of the data will change. For example, zooming in very close will allow the user to see individual data points, and zooming out very far will show a more general trend for that location. The code that was produced to create the heatmap could also be used in the future to plot more data (perhaps other SDGs) relatively easily, by pointing to a new geojson file containing the data to be plotted.
+		COVID-19 has caused drastic reductions in transport and energy production causing reductions in air pollution. This can be seen in the map providing carbon monoxide (CO) levels in 2019 and 2020. 
 		<br><br>
-		The project was developed in Microsoft’s Visual Studio Code, and a GitHub repository was used throughout. 
-		<br><br>
-		In order to produce the air pollution heat map, we came across these problems… and found these solutions… and had these achievements…***
-		<br><br>
-		We had also planned to make the link between air pollution and crop yield, thereby addressing another important aspect of the SDGs: global food security. Pollution has varied but predominantly negative impacts on crop yield (NASA, n.d.). Therefore, we thought it important to explore this issue because theoretically the coronavirus outbreak and thus lockdown has led to a reduction in air pollution, which in turn would improve crop yield. This would have been useful to look at the effects of COVID-19 in a holistic manner but due to time constraints and limited expertise/knowledge, we opted to limit our research to air pollution alone.
-
+		The short-term reductions in air pollution caused by COVID-19 highlights the need for improved policy, energy production and green transport to sustain reduced air pollution in the long term. 
 		</div>
+		</div>
+
+		<div class="information text">
+		<h2>References:</h2>
+		1: World Health Organisation (2020) Air pollution [online] (Accessed: 31 May 2020). Available at <a href="https://www.who.int/health-topics/air-pollution#tab=tab_2">https://www.who.int/health-topics/air-pollution#tab=tab_2</a><br>
+		2: NASA (n.d.) Food Security from Space [online] (Accessed: 30 May 2020) Available at <a href="https://airquality.gsfc.nasa.gov/sites/default/files/airquality/AirQuality_FoodSecurity-WEB.pdf">https://airquality.gsfc.nasa.gov/sites/default/files/airquality/AirQuality_FoodSecurity-WEB.pdf</a>
 		</div>
 
 	</body>
