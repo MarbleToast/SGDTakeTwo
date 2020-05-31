@@ -11,6 +11,10 @@
 			href="https://api.mapbox.com/mapbox-assembly/v0.21.1/assembly.min.css"
 			rel="stylesheet"
 		/>
+		<link
+			href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css"
+			rel="stylesheet"
+		/>
 		<style>
 			body {
 				margin: 0;
@@ -21,7 +25,20 @@
 				background: #fff;
 				position: absolute;
 				z-index: 1;
-				top: 10px;
+				top: 1vh;
+				right: 10px;
+				border-radius: 3px;
+				width: 200px;
+				border: 1px solid rgba(0, 0, 0, 0.4);
+				font-family: "Open Sans", sans-serif;
+			}
+
+			#info {
+				padding: 10px;
+				background: #fff;
+				position: absolute;
+				z-index: 1;
+				top: 20vh;
 				right: 10px;
 				border-radius: 3px;
 				width: 200px;
@@ -37,7 +54,7 @@
 				background: #fff;
 				position: absolute;
 				z-index: 1;
-				top: 10px;
+				top: 1vh;
 				left: 10px;
 				border-radius: 3px;
 				width: 120px;
@@ -104,7 +121,10 @@
 	<body>
 		<a href="index.html" id="selection">< Back</a>
 		<nav id="menu">
-			<span>Particulates as an indicator of air quality (mol/m^2)</span>
+			<span
+				>Carbon monoxide particulates as an indicator of air quality
+				(mol/m^2)</span
+			>
 
 			<div
 				style="
@@ -121,7 +141,10 @@
 				</select>
 				<div class="select-arrow"></div>
 			</div>
+
+			<p>Left-click and drag to pan. Right-click and drag to pitch.</p>
 		</nav>
+
 		<div id="container">
 			<div id="static">
 				<span
