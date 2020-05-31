@@ -2,341 +2,75 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Create a heatmap layer</title>
+		<title>Covid's Impact of SGDs</title>
+
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet"> 
+
 		<meta
 			name="viewport"
 			content="initial-scale=1,maximum-scale=1,user-scalable=no"
 		/>
-		<script src="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js"></script>
-		<link
-			href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css"
-			rel="stylesheet"
-		/>
+
 		<style>
 			body {
-				margin: 0;
+				background-color: #c0c9cc;
 				padding: 0;
+				margin: 0;
+				font-size: 24px;
+				font-family: "Open Sans";	
+				color: #fff;	
 			}
-			#map {
-				position: absolute;
-				top: 0;
-				bottom: 0;
+
+			#titleBox {
+				background-color: #009DDA;
+				height: 150px;
 				width: 100%;
-			}
-			.fixed {
-				position: fixed;
-				z-index: 999;
-				top: 10px;
-				left: 10px;
-			}
-			#menu {
-				background: #fff;
-				position: absolute;
-				z-index: 1;
-				top: 10px;
-				right: 10px;
-				border-radius: 3px;
-				width: 120px;
-				border: 1px solid rgba(0, 0, 0, 0.4);
-				font-family: 'Open Sans', sans-serif;
-			}
-
-			#menu a {
-				font-size: 13px;
-				color: #404040;
-				display: block;
-				margin: 0;
-				padding: 0;
-				padding: 10px;
-				text-decoration: none;
-				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+				margin: 0;	
+				font-size: 3.5rem;
 				text-align: center;
+				vertical-align: center;
+				padding: 25px 0px 25px;
 			}
 
-			#menu a:last-child {
-				
+			#SDG_logo {
+				width: 25%;
+				float: left;
+				padding-right: 20px;
 			}
 
-			#menu a:hover {
-				background-color: #f8f8f8;
-				color: #404040;
-			}
-
-			#menu a.active {
-				background-color: #3887be;
-				color: #ffffff;
-			}
-
-			#menu a.active:hover {
-				background: #3074a4;
-			}
-
-			#selection {
-				background: #fff;
-				position: absolute;
-				z-index: 1;
-				top: 10px;
-				left: 10px;
-				border-radius: 3px;
-				width: 120px;
-				border: 1px solid rgba(0, 0, 0, 0.4);
-				font-family: 'Open Sans', sans-serif;
-			}
-
-			#selection b {
-				font-size: 13px;
-				color: #404040;
-				display: block;
-				margin: 0;
-				padding: 0;
-				padding: 0px;
-				text-decoration: none;
-				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-				text-align: center;
-			}
-
-			#selection b:last-child {
-				
-			}
-
-			#selection b:hover {
-				background-color: #f8f8f8;
-				color: #404040;
-			}
-
-			#selection b.active {
-				background-color: #3887be;
-				color: #ffffff;
-			}
-
-			#selection b.active:hover {
-				background: #3074a4;
+			#information_text {
+				color: #009DDA;
+				text-align: justify;
 			}
 
 		</style>
 	</head>
 	<body>
-		<nav id="selection"></nav>
-		<nav id="menu"></nav>
-		<div id="map"></div>
 
-		<script>
+		<p id="titleBox">
+		<b>IMPACT OF COVID-19 ON UN SDG11: SUSTAINABLE CITIES AND COMMUNITIES</b>
+		</p>
 
-			var toggleableSGDIds = ['SGD1', 'SGD2'];
-			var toggleableLayerIds = [['Before1', 'After1'], ['Before2']];
+		<div class="wrapper">
+		<div id="SDG_logo">
+		<a href="https://sustainabledevelopment.un.org/?menu=1300"><img src="logos/SDG_horizontal.png" width = 100%/></a>
+		<img src="logos/SDG_11.png" onmouseover="this.src='logos/SDG_11_2.png'" style = "padding-left: 25%" onmouseout="this.src='logos/SDG_11.png'" width=50%/>
+		</div>
 
-			for (var i=0; i<toggleableSGDIds.length; i++) {
-				var id = toggleableSGDIds[i];
+		<div id="information_text">
+		The Sustainable Development Goals (SDGs) are an important part of global society and it is essential that we keep them at the forefront of science and policy, especially with a view to moving out of the COVID-19 crisis. We elected to look into SDG 11, Sustainable Cities and Communities, because it is important to link the impact of coronavirus to global air pollution and then link this back to the impact it has on communities. This will enable us to produce a more interdisciplinary, integrated outlook on the future and how best to move forward following the pandemic, ensuring to keep the environmental crisis we also face in mind.
+		<br><br>
+		Using data from the Canadian Space Agency on Carbon Monoxide (CO) concentration and JavaScript’s mapbox library, we have plotted a heat map of CO concentration in atmospheric columns (mol/m^3) across the world. There are 2 layers to the map, one for April 2019, and one for April 2020, allowing us to compare the CO concentration before and during the COVID-19 outbreak. The layers are able to be turned on and off individually for clearer comparisons. On zooming in and out of the world map, the resolution of the data will change. For example, zooming in very close will allow the user to see individual data points, and zooming out very far will show a more general trend for that location. The code that was produced to create the heatmap could also be used in the future to plot more data (perhaps other SDGs) relatively easily, by pointing to a new geojson file containing the data to be plotted.
+		<br><br>
+		The project was developed in Microsoft’s Visual Studio Code, and a GitHub repository was used throughout. 
+		<br><br>
+		In order to produce the air pollution heat map, we came across these problems… and found these solutions… and had these achievements…***
+		<br><br>
+		We had also planned to make the link between air pollution and crop yield, thereby addressing another important aspect of the SDGs: global food security. Pollution has varied but predominantly negative impacts on crop yield (NASA, n.d.). Therefore, we thought it important to explore this issue because theoretically the coronavirus outbreak and thus lockdown has led to a reduction in air pollution, which in turn would improve crop yield. This would have been useful to look at the effects of COVID-19 in a holistic manner but due to time constraints and limited expertise/knowledge, we opted to limit our research to air pollution alone.
 
-				var link = document.createElement('b');
-				link.href = '#';
-				link.className = 'active';
-				link.textContent = id;
+		</div>
+		</div>
 
-				link.onclick = function(e) {
-					var clickedLayer = this.textContent;
-					e.preventDefault();
-					e.stopPropagation();
-
-					var index = toggleableSGDIds.indexOf(clickedLayer);
-					document.getElementById('menu').innerHTML = '';
-					changeOptions(toggleableLayerIds[index]);
-				};
-				var sel = document.getElementById('selection');
-				sel.appendChild(link);
-			};
-
-			changeOptions = function(toggleableLayerIds) {
-				for (var i=0; i<toggleableLayerIds.length; i++) {
-					var id = toggleableLayerIds[i];
-
-					var link = document.createElement('a');
-					link.href = '#';
-					link.className = 'active';
-					link.textContent = id;
-
-					link.onclick = function(e) {
-						var clickedLayer = this.textContent;
-						e.preventDefault();
-						e.stopPropagation();
-
-						var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-
-						if (visibility == 'visible') {
-							map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-							this.className = '';
-						} 
-						else {
-							this.className = 'active';
-							map.setLayoutProperty(clickedLayer, 'visibility', 'visibile');
-						}
-
-					};
-
-					var layers = document.getElementById('menu');
-					layers.appendChild(link);
-
-				}
-			}
-
-			mapboxgl.accessToken =
-				"pk.eyJ1IjoibWFyYmxldG9hc3QiLCJhIjoiY2thdGwzbmZvMDJnMTJ5bzlzZ2N2dzRoeiJ9.CSGWtvwdfVBHb6YP0kurOw"
-			var map = new mapboxgl.Map({
-				container: "map",
-				style: "mapbox://styles/mapbox/dark-v10",
-				center: [-120, 50],
-				zoom: 2,
-			})
-
-			map.on("load", function () {
-				// Add a geojson point source.
-				// Heatmap layers also work with a vector tile source.
-				map.addSource("particulates", {
-					type: "geojson",
-					data: "./MOP02J-20190401-L2V18.0.3.geojson",
-				})
-
-				map.addLayer(
-					{
-						id: "earthquakes-heat",
-						type: "heatmap",
-						source: "particulates",
-						maxzoom: 9,
-						paint: {
-							// Increase the heatmap weight based on frequency and property magnitude
-							"heatmap-weight": [
-								"interpolate",
-								["linear"],
-								["get", "COTotalColumn"],
-								0,
-								0,
-								6,
-								1,
-							],
-							// Increase the heatmap color weight weight by zoom level
-							// heatmap-intensity is a multiplier on top of heatmap-weight
-							"heatmap-intensity": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								0,
-								1,
-								9,
-								3,
-							],
-							// Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-							// Begin color ramp at 0-stop with a 0-transparancy color
-							// to create a blur-like effect.
-							"heatmap-color": [
-								"interpolate",
-								["linear"],
-								["heatmap-density"],
-								0,
-								"rgba(33,102,172,0)",
-								0.2,
-								"rgb(103,169,207)",
-								0.4,
-								"rgb(209,229,240)",
-								0.6,
-								"rgb(253,219,199)",
-								0.8,
-								"rgb(239,138,98)",
-								1,
-								"rgb(178,24,43)",
-							],
-							// Adjust the heatmap radius by zoom level
-							"heatmap-radius": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								0,
-								2,
-								9,
-								20,
-							],
-							// Transition from heatmap to circle layer by zoom level
-							"heatmap-opacity": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								7,
-								1,
-								9,
-								0,
-							],
-						},
-					},
-					"waterway-label"
-				)
-
-				map.addLayer(
-					{
-						id: "earthquakes-point",
-						type: "circle",
-						source: "particulates",
-						minzoom: 7,
-						paint: {
-							// Size circle radius by earthquake magnitude and zoom level
-							"circle-radius": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								7,
-								[
-									"interpolate",
-									["linear"],
-									["get", "COTotalColumn"],
-									1,
-									1,
-									6,
-									4,
-								],
-								16,
-								[
-									"interpolate",
-									["linear"],
-									["get", "COTotalColumn"],
-									1,
-									5,
-									6,
-									50,
-								],
-							],
-							// Color circle by earthquake magnitude
-							"circle-color": [
-								"interpolate",
-								["linear"],
-								["get", "COTotalColumn"],
-								1,
-								"rgba(33,102,172,0)",
-								2,
-								"rgb(103,169,207)",
-								3,
-								"rgb(209,229,240)",
-								4,
-								"rgb(253,219,199)",
-								5,
-								"rgb(239,138,98)",
-								6,
-								"rgb(178,24,43)",
-							],
-							"circle-stroke-color": "white",
-							"circle-stroke-width": 1,
-							// Transition from heatmap to circle layer by zoom level
-							"circle-opacity": [
-								"interpolate",
-								["linear"],
-								["zoom"],
-								7,
-								0,
-								8,
-								1,
-							],
-						},
-					},
-					"waterway-label"
-				)
-			})
-		</script>
 	</body>
 </html>
+
