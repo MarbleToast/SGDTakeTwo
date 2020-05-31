@@ -100,19 +100,24 @@
 			</div>
 		</nav>
 		<div id="map"></div>
+
 		<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
 		<script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
 		<script src="https://unpkg.com/supercluster@5.0.0/dist/supercluster.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.1/chroma.min.js"></script>
+
 		<script>
+			/* 
+                Code based off of Ryan Baumann's work:
+                https://bl.ocks.org/ryanbaumann/01b2c7fc0ddb7b27f6a72217bd1461ad
+            */
+
 			var select_el = document.getElementById("select-option")
 			var select_value = select_el.value
 
 			var clusterRadius = 20
 			var clusterMaxZoom = 14
-			//Property of geojson data I want to aggregate on.  Must be numeric for this example
 			var propertyToAggregate = "COTotalColumn"
-
 			let data_url_1 = "./datasets/particulates/april2019.geojson"
 			let data_url_2 = "./datasets/particulates/april2020.geojson"
 			var mydata
@@ -221,7 +226,7 @@
 				"pk.eyJ1IjoibWFyYmxldG9hc3QiLCJhIjoiY2thdGwzbmZvMDJnMTJ5bzlzZ2N2dzRoeiJ9.CSGWtvwdfVBHb6YP0kurOw"
 			var map = new mapboxgl.Map({
 				container: "map",
-				style: "mapbox://styles/mapbox/dark-v10?optimize=true",
+				style: "mapbox://styles/mapbox/light-v10?optimize=true",
 				center: [5, 20],
 				zoom: 1.1,
 				hash: true,
