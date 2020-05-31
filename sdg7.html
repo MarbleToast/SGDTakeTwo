@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Air Quality</title>
+		<meta
+			name="viewport"
+			content="initial-scale=1,maximum-scale=1,user-scalable=no"
+		/>
+		<link
+			href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://api.mapbox.com/mapbox-assembly/v0.21.1/assembly.min.css"
+			rel="stylesheet"
+		/>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			#map {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			#menu {
+				padding: 10px;
+				background: #fff;
+				position: absolute;
+				z-index: 1;
+				top: 10px;
+				right: 10px;
+				border-radius: 3px;
+				width: 200px;
+				border: 1px solid rgba(0, 0, 0, 0.4);
+				font-family: "Open Sans", sans-serif;
+			}
+
+			#select-option {
+				background-color: #cc0f0f;
+			}
+
+			#selection {
+				background: #fff;
+				position: absolute;
+				z-index: 1;
+				top: 10px;
+				left: 10px;
+				border-radius: 3px;
+				width: 120px;
+				border: 1px solid rgba(0, 0, 0, 0.4);
+				font-family: "Open Sans", sans-serif;
+			}
+
+			#selection {
+				font-size: 13px;
+				color: #404040;
+				display: block;
+				margin: 0;
+				padding: 0;
+				padding: 0px;
+				text-decoration: none;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+				text-align: center;
+			}
+
+			#selection:hover {
+				background-color: #f8f8f8;
+				color: #404040;
+			}
+
+			#selection:active {
+				background-color: #cc0f0f;
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+		<a href="index.html" id="selection">< Back</a>
+		<nav id="menu">
+			<span>Particulates as an indicator of air quality (mol/m^2)</span>
+
+			<div
+				style="
+					margin-left: auto;
+					margin-right: auto;
+					width: 90%;
+					color: white;
+					margin: 10px;
+				"
+			>
+				<select class="select" id="select-option">
+					<option value="1">April 2019</option>
+					<option value="2">April 2020</option>
+				</select>
+				<div class="select-arrow"></div>
+			</div>
+		</nav>
+		<div id="map"></div>
+		<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
+		<script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+		<script src="https://unpkg.com/supercluster@5.0.0/dist/supercluster.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.1/chroma.min.js"></script>
+		<script>
+			var select_el = document.getElementById("select-option")
+			var select_value = select_el.value
+
+			var clusterRadius = 20
+			var clusterMaxZoom = 14
+			//Property of geojson data I want to aggregate on.  Must be numeric for this example
+			var propertyToAggregate = "COTotalColumn"
+
+			let data_url_1 = "./datasets/particulates/april2019.geojson"
+			let data_url_2 = "./datasets/particulates/april2020.geojson"
+			var mydata
+			var currentZoom
+			var color = "YlOrRd"
+			var clusterData
+			var worldBounds = [-180.0, -90.0, 180.0, 90.0]
+			var currentCluster
+
+			// HELPER FUNCTIONS
+			function getFeatureDomain(geojson_data) {
+				let data_domain = []
+				turf.propEach(geojson_data, function (currentProperties, featureIndex) {
+					data_domain.push(
+						Math.round((Number(currentProperties["avg"]) * 100) / 100)
+					)
+				})
+				return data_domain
+			}
+
+			function createColorStops(stops_domain, scale) {
+				let stops = []
+				stops_domain.forEach(function (d) {
+					stops.push([d, scale(d).hex()])
+				})
+				return stops
+			}
+
+			function createRadiusStops(stops_domain, min_radius, max_radius) {
+				let stops = []
+				let stops_len = stops_domain.length
+				let count = 1
+				stops_domain.forEach(function (d) {
+					stops.push([
+						d,
+						min_radius + (count / stops_len) * (max_radius - min_radius),
+					])
+					count += 1
+				})
+				return stops
+			}
+
+			var cluster_1 = new Supercluster({
+				radius: clusterRadius,
+				maxZoom: clusterMaxZoom,
+				initial: function () {
+					return {
+						count: 0,
+						sum: 0,
+						min: Infinity,
+						max: -Infinity,
+					}
+				},
+				map: function (properties) {
+					return {
+						count: 1,
+						sum: Number(properties[propertyToAggregate]),
+						min: Number(properties[propertyToAggregate]),
+						max: Number(properties[propertyToAggregate]),
+					}
+				},
+				reduce: function (accumulated, properties) {
+					accumulated.sum += Math.round(properties.sum * 100) / 100
+					accumulated.count += properties.count
+					accumulated.min =
+						Math.round(Math.min(accumulated.min, properties.min) * 100) / 100
+					accumulated.max =
+						Math.round(Math.max(accumulated.max, properties.max) * 100) / 100
+					accumulated.avg =
+						Math.round((100 * accumulated.sum) / accumulated.count) / 100
+				},
+			})
+
+			var cluster_2 = new Supercluster({
+				radius: clusterRadius,
+				maxZoom: clusterMaxZoom,
+				initial: function () {
+					return {
+						count: 0,
+						sum: 0,
+						min: Infinity,
+						max: -Infinity,
+					}
+				},
+				map: function (properties) {
+					return {
+						count: 1,
+						sum: Number(properties[propertyToAggregate]),
+						min: Number(properties[propertyToAggregate]),
+						max: Number(properties[propertyToAggregate]),
+					}
+				},
+				reduce: function (accumulated, properties) {
+					accumulated.sum += Math.round(properties.sum * 100) / 100
+					accumulated.count += properties.count
+					accumulated.min =
+						Math.round(Math.min(accumulated.min, properties.min) * 100) / 100
+					accumulated.max =
+						Math.round(Math.max(accumulated.max, properties.max) * 100) / 100
+					accumulated.avg =
+						Math.round((100 * accumulated.sum) / accumulated.count) / 100
+				},
+			})
+
+			mapboxgl.accessToken =
+				"pk.eyJ1IjoibWFyYmxldG9hc3QiLCJhIjoiY2thdGwzbmZvMDJnMTJ5bzlzZ2N2dzRoeiJ9.CSGWtvwdfVBHb6YP0kurOw"
+			var map = new mapboxgl.Map({
+				container: "map",
+				style: "mapbox://styles/mapbox/dark-v10?optimize=true",
+				center: [5, 20],
+				zoom: 1.1,
+				hash: true,
+				maxZoom: 13,
+			})
+
+			map.on("style.load", function () {
+				fetch(data_url_1)
+					.then((res) => res.json())
+					.then((out) => {
+						mydata = out
+						// USE SUPERCLUSTER TO CLUSTER THE GEOJSON DATA
+						cluster_1.load(mydata.features)
+						currentCluster = cluster_1
+					})
+					.then(() => fetch(data_url_2))
+					.then((res) => res.json())
+					.then((out) => {
+						mydata = out
+						// USE SUPERCLUSTER TO CLUSTER THE GEOJSON DATA
+						cluster_2.load(mydata.features)
+						// CREATE THE MAP
+					})
+					.then(() => initmap())
+					.catch((err) => console.error(err))
+			})
+
+			select_el.addEventListener("change", function () {
+				select_el = document.getElementById("select-option")
+
+				select_value = select_el.value
+				currentCluster = select_value === "1" ? cluster_1 : cluster_2
+				initmap()
+			})
+
+			var colorStops, radiusStops
+
+			function updateClusters(repaint) {
+				currentZoom = map.getZoom()
+
+				clusterData = turf.featureCollection(
+					currentCluster.getClusters(worldBounds, Math.floor(currentZoom))
+				)
+				let domain = getFeatureDomain(clusterData, "avg")
+				var stops_domain = [0, 0, 0, 0, 1]
+				if (domain) {
+					stops_domain = chroma.limits(domain, "e", 5)
+				}
+				var scale = chroma.scale(color).domain(stops_domain).mode("lab")
+				colorStops = createColorStops(stops_domain, scale)
+				radiusStops = createRadiusStops(stops_domain, 10, 25)
+
+				if (repaint) {
+					map.setPaintProperty("clusters", "circle-color", {
+						property: "avg",
+						stops: colorStops,
+					})
+
+					map.setPaintProperty("clusters", "circle-radius", {
+						property: "avg",
+						stops: radiusStops,
+					})
+
+					map.setPaintProperty("unclustered-point", "circle-color", {
+						property: propertyToAggregate,
+						stops: colorStops,
+					})
+				}
+			}
+
+			function initmap() {
+				updateClusters(false)
+
+				try {
+					map.removeLayer("clusters")
+					map.removeLayer("unclustered-point")
+					map.removeSource("earthquakes")
+				} catch {}
+
+				map.addSource("earthquakes", {
+					type: "geojson",
+					data: clusterData,
+					buffer: 1,
+					maxzoom: 14,
+				})
+
+				map.addLayer(
+					{
+						id: "clusters",
+						type: "circle",
+						source: "earthquakes",
+						filter: ["has", "point_count"],
+						paint: {
+							"circle-color": {
+								property: "avg",
+								stops: colorStops,
+							},
+							"circle-blur": [
+								"case",
+								["==", ["feature-state", "hover"], 1],
+								0,
+								0.55,
+							],
+							"circle-stroke-width": [
+								"case",
+								["==", ["feature-state", "hover"], 1],
+								1.5,
+								0,
+							],
+							"circle-stroke-color": [
+								"case",
+								["==", ["feature-state", "hover"], 1],
+								"white",
+								"rgba(0,0,0,0)",
+							],
+							"circle-radius": {
+								property: "avg",
+								type: "interval",
+								stops: radiusStops,
+							},
+						},
+					},
+					"waterway-label"
+				)
+
+				map.addLayer(
+					{
+						id: "unclustered-point",
+						type: "circle",
+						source: "earthquakes",
+						filter: ["!has", "point_count"],
+						paint: {
+							"circle-color": {
+								property: propertyToAggregate,
+								stops: colorStops,
+							},
+							"circle-radius": 4,
+							"circle-stroke-width": 1,
+							"circle-stroke-color": "#fff",
+						},
+					},
+					"waterway-label"
+				)
+
+				map.on("zoom", function () {
+					newZoom = map.getZoom()
+
+					if (Math.floor(currentZoom) == 0) {
+						currentZoom = 1
+					}
+
+					if (Math.floor(newZoom) != Math.floor(currentZoom)) {
+						currentZoom = newZoom
+						updateClusters(true)
+						map.getSource("earthquakes").setData(clusterData)
+					}
+				})
+
+				var hoverId = 0
+
+				var onMouseMove = function (e) {
+					var features = map.queryRenderedFeatures(e.point, {
+						layers: ["clusters"],
+					})
+					if (!features.length) {
+						map.getCanvas().style.cursor = ""
+						map.setFeatureState(
+							{
+								source: "earthquakes",
+								id: hoverId,
+							},
+							{ hover: 0 }
+						)
+						hoverId = 0
+						return
+					}
+					map.getCanvas().style.cursor = "pointer"
+					let newHoverId = features[0].id
+					if (newHoverId != hoverId) {
+						map.setFeatureState(
+							{
+								source: "earthquakes",
+								id: hoverId,
+							},
+							{ hover: 0 }
+						)
+						hoverId = newHoverId
+					}
+					map.setFeatureState(
+						{
+							source: "earthquakes",
+							id: hoverId,
+						},
+						{ hover: 1 }
+					)
+				}
+
+				map.on("mousemove", onMouseMove)
+			}
+		</script>
+	</body>
+</html>
