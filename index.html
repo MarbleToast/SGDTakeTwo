@@ -102,14 +102,6 @@
 				color: #ffffff;
 			}
 
-            
-
-            #SDG_logo {
-                width: 50%;
-                padding-left: 13%;
-                margin: auto;
-                padding-top: 40px;
-            }
 
             #seven_logo { 
                 width: 25%;
@@ -195,7 +187,12 @@
 				GitHub repository was used throughout.
 				<br /><br />
 				In order to produce the air pollution heat map, we came across these
-				problems… and found these solutions… and had these achievements…***
+                problems:
+                    - A map that was able to display all the data points without compromising performance
+                    - A simple, easy to use interface
+                
+                To solve these, we employed MapboxGL, plus property aggregation and clustering
+                in order to keep things running smoothly, whilst still looking and controlling smoothly as well.
 				<br /><br />
 				We had also planned to make the link between air pollution and crop
 				yield, thereby addressing another important aspect of the SDGs: global
@@ -232,19 +229,18 @@
 		</div>
 
 
-		<div id="menu"><a href="sdg7.html" class="link">Go to Map</a></div>
-    <br><br>
-    <div class="wrapper">
-        <img src="logos/SDG 3, Health and Well Being.png" width=25%></img>
-    </div>
-    <div class="logoWrapper">
-        <div id="SDG_logo">
-            <a href="https://sustainabledevelopment.un.org/?menu=1300"><img src="logos/SDG_horizontal.png" width=50%></img></a>
+        <div id="menu"><a href="sdg7.html" class="link">Go to Map</a></div>
+        <div class="wrapper" style="text-align: center;">
+            <br /><br />
+            <div class="wrapper">
+                <img src="logos/SDG 3, Health and Well Being.png" width=25%></img>
+            </div>
+            <div class="wrapper" style="text-align: center;">
+                <div class="wrapper">
+                    <a href="https://sustainabledevelopment.un.org/?menu=1300"><img src="logos/SDG_horizontal.png" width=50%></img></a>
+                </div>
+            </div>
         </div>
-        <div id="seven_logo">
-            <img src="logos/SDG_11.png" onmouseover="this.src='logos/SDG_11_2.png'" onmouseout="this.src='logos/SDG_11.png'" width=50%></img>
-        </div>
-     </div>
 
 	</body>
 </html>
