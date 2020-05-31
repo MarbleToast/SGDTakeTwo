@@ -3,18 +3,43 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Covid's Impact of SGDs</title>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet"> 
 		<meta
 			name="viewport"
 			content="initial-scale=1,maximum-scale=1,user-scalable=no"
 		/>
 		<style>
 			body {
-				margin: 0;
+				background-color: #c0c9cc;
 				padding: 0;
-				background-color: #191a1a;
+				margin: 0;
+				font-size: 24px;
+				font-family: "Open Sans";	
+				color: #fff;	
 			}
 
-			#menu {
+			#titleBox {
+				background-color: #009DDA;
+				height: 150px;
+				width: 100%;
+				margin: 0;	
+				font-size: 3.5rem;
+				text-align: center;
+				vertical-align: center;
+				padding: 25px 0px 25px;
+			}
+
+			#SDG_logo {
+				width: 25%;
+				float: left;
+				padding-right: 20px;
+			}
+
+			#information_text {
+				color: #009DDA;
+				text-align: justify;
+			}
+      #menu {
 				background: #fff;
 				position: fixed;
 				z-index: 1;
@@ -51,6 +76,31 @@
 		</style>
 	</head>
 	<body>
+
+		<p id="titleBox">
+		<b>IMPACT OF COVID-19 ON UN SDG11: SUSTAINABLE CITIES AND COMMUNITIES</b>
+		</p>
+
+		<div class="wrapper">
+		<div id="SDG_logo">
+		<a href="https://sustainabledevelopment.un.org/?menu=1300"><img src="logos/SDG_horizontal.png" width = 100%/></a>
+		<img src="logos/SDG_11.png" onmouseover="this.src='logos/SDG_11_2.png'" style = "padding-left: 25%" onmouseout="this.src='logos/SDG_11.png'" width=50%/>
+		</div>
+
+		<div id="information_text">
+		The Sustainable Development Goals (SDGs) are an important part of global society and it is essential that we keep them at the forefront of science and policy, especially with a view to moving out of the COVID-19 crisis. We elected to look into SDG 11, Sustainable Cities and Communities, because it is important to link the impact of coronavirus to global air pollution and then link this back to the impact it has on communities. This will enable us to produce a more interdisciplinary, integrated outlook on the future and how best to move forward following the pandemic, ensuring to keep the environmental crisis we also face in mind.
+		<br><br>
+		Using data from the Canadian Space Agency on Carbon Monoxide (CO) concentration and JavaScript’s mapbox library, we have plotted a heat map of CO concentration in atmospheric columns (mol/m^3) across the world. There are 2 layers to the map, one for April 2019, and one for April 2020, allowing us to compare the CO concentration before and during the COVID-19 outbreak. The layers are able to be turned on and off individually for clearer comparisons. On zooming in and out of the world map, the resolution of the data will change. For example, zooming in very close will allow the user to see individual data points, and zooming out very far will show a more general trend for that location. The code that was produced to create the heatmap could also be used in the future to plot more data (perhaps other SDGs) relatively easily, by pointing to a new geojson file containing the data to be plotted.
+		<br><br>
+		The project was developed in Microsoft’s Visual Studio Code, and a GitHub repository was used throughout. 
+		<br><br>
+		In order to produce the air pollution heat map, we came across these problems… and found these solutions… and had these achievements…***
+		<br><br>
+		We had also planned to make the link between air pollution and crop yield, thereby addressing another important aspect of the SDGs: global food security. Pollution has varied but predominantly negative impacts on crop yield (NASA, n.d.). Therefore, we thought it important to explore this issue because theoretically the coronavirus outbreak and thus lockdown has led to a reduction in air pollution, which in turn would improve crop yield. This would have been useful to look at the effects of COVID-19 in a holistic manner but due to time constraints and limited expertise/knowledge, we opted to limit our research to air pollution alone.
+
+		</div>
+		</div>
 		<nav id="menu"><a href="sdg7.html">SGD7</a></nav>
 	</body>
 </html>
+
